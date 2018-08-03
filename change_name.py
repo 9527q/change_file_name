@@ -1,6 +1,8 @@
 import sys
 import os
 
+CHANGE_SIGN = '_'
+
 
 def ch_name(old, new):
     try:
@@ -27,11 +29,11 @@ for file in files:
         # 后缀
         end_str = file[end_num:]
 
-    if '_' not in file[:end_num]:
+    if CHANGE_SIGN not in file[:end_num]:
         continue
 
     # _ 的位置
-    _num = file.rfind('_', 0, end_num)
+    _num = file.rfind(CHANGE_SIGN, 0, end_num)
     # 新名字
     new_name = file[:_num] + end_str
     ch_name(file, new_name)
