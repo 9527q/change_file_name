@@ -1,39 +1,26 @@
-import sys
+"""
+把文件名最后一个 `_` 以后的内容删除
+"""
 import os
 
-CHANGE_SIGN = '_'
+# 输入路径
+tip = '文件路径：'
+while True:
+    path = input(tip)
+    if os.path.exists(path) or os.path.lexists(path):
+        break
+    tip = "\n'{}' 路径不存在。\n请重新输入：".format(path)
 
-
-def ch_name(old, new):
-    try:
-        os.renames(old, new)
-    except Exception as e:
-        input('ERROR>>\n %s' % e)
-
-file = sys.argv[1]
-
-# 进入文件夹
-try:
-    os.chdir(file)
-    # 进入成功则获取里面的文件名列表
-    files = os.listdir('./')
-except:
-    # 进入失败则表示这就是一个文件而不是文件夹
-    files = [file]
-for file in files:
-    if '.' not in file:
-        end_num, end_str = None, ''
-    else:
-        # 后缀的.的位置
-        end_num = file.rfind('.')
-        # 后缀
-        end_str = file[end_num:]
-
-    if CHANGE_SIGN not in file[:end_num]:
+paths = [path]
+while paths:
+    path = paths.pop(0)
+    left = path.rindex(os.sep) + 1 if os.sep in path else 0
+    right = path.rindex('.') if '.' in path[left:] else len(path)
+    if '_' not in path[left:right]:
         continue
-
-    # _ 的位置
-    _num = file.rfind(CHANGE_SIGN, 0, end_num)
-    # 新名字
-    new_name = file[:_num] + end_str
-    ch_name(file, new_name)
+    underline_index = path.rindex('_', left, right)
+    new_path = path[:underline_index] + path[right:]
+    os.rename(path, new_path)
+    print('{} --> {}'.format(path, new_path))
+    if os.path.isdir(new_path):
+        paths += [os.path.join(new_path, d) for d in os.listdir(new_path)]
